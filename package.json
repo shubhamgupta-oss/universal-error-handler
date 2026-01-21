@@ -1,6 +1,6 @@
 {
   "name": "@shubhamgupta-oss/universal-error-handler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "access": "public",
   "description": "Production-grade, universal error-handling system for Node.js/Express + React. Single shared error contract for full-stack TypeScript applications.",
   "keywords": [
