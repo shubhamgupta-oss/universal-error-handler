@@ -1,0 +1,90 @@
+{
+  "name": "universal-error-handler",
+  "version": "1.0.0",
+  "description": "Production-grade, universal error-handling system for Node.js/Express + React. Single shared error contract for full-stack TypeScript applications.",
+  "keywords": [
+    "error",
+    "universal-error-handler",
+    "universal-error",
+    "error-handling",
+    "exception-handling",
+    "express",
+    "react",
+    "typescript",
+    "fullstack",
+    "error-boundary",
+    "middleware",
+    "api-errors",
+    "validation-errors",
+    "database-errors",
+    "production-ready",
+    "error-normalization"
+  ],
+  "homepage": "https://github.com/shubhamgupta-oss/universal-error-handler",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shubhamgupta-oss/universal-error-handler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shubhamgupta-oss/universal-error-handler/issues"
+  },
+  "author": "Shubham Gupta",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./shared": {
+      "import": "./dist/shared/index.js",
+      "require": "./dist/shared/index.js",
+      "types": "./dist/shared/index.d.ts"
+    },
+    "./backend": {
+      "import": "./dist/backend/index.js",
+      "require": "./dist/backend/index.js",
+      "types": "./dist/backend/index.d.ts"
+    },
+    "./frontend": {
+      "import": "./dist/frontend/index.js",
+      "require": "./dist/frontend/index.js",
+      "types": "./dist/frontend/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run type-check"
+  },
+  "peerDependencies": {
+    "express": "^4.18.0",
+    "react": "^18.0.0"
+  },
+  "peerDependenciesOptional": {
+    "express": true,
+    "react": true
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.27",
+    "express": "^5.2.1",
+    "react": "^19.2.3",
+    "typescript": "^5.0.0",
+    "zod": "^4.3.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "licenseText": "MIT License\n\nCopyright (c) 2026 Shubham Gupta\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\naUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
+}
