@@ -26,7 +26,7 @@ A single, standardized npm package that provides comprehensive error handling ac
 ### The Problem It Solves
 
 ```
-WITHOUT smart-error-handler:
+WITHOUT fault-handler:
 ┌────────────────┐         ┌──────────────────┐
 │ Backend Error  │────────→│ Raw JSON Response│
 └────────────────┘         └──────────────────┘
@@ -36,7 +36,7 @@ WITHOUT smart-error-handler:
                            → All inconsistent formats & messaging
 
 
-WITH smart-error-handler:
+WITH fault-handler:
 ┌──────────────────────────┐
 │ Backend Error (any type) │
 └────────────┬─────────────┘
@@ -132,7 +132,7 @@ handleError(data);
 ## 📦 Architecture
 
 ```
-smart-error-handler/
+fault-handler/
 ├── src/
 │   ├── shared/           # ← Used by Backend AND Frontend
 │   │   ├── error-codes.ts       # Single source of truth for error codes
@@ -214,8 +214,8 @@ import {
   ProcessErrorHandler,
   asyncHandler,
   errorMiddleware,
-} from 'smart-error-handler/backend';
-import { UniversalError, ErrorCode } from 'smart-error-handler/shared';
+} from 'fault-handler/backend';
+import { UniversalError, ErrorCode } from 'fault-handler/shared';
 ```
 
 **Step 2: Add request ID middleware (FIRST)**
@@ -284,7 +284,7 @@ import {
   ErrorBoundary,
   GlobalErrorProvider,
   useAPIError,
-} from 'smart-error-handler/frontend';
+} from 'fault-handler/frontend';
 ```
 
 **Step 2: Wrap app with error providers (REQUIRED)**
@@ -308,8 +308,8 @@ function App() {
 
 **Step 3: Optional - Customize error messages**
 ```typescript
-import { UIMessageMapper } from 'smart-error-handler/frontend';
-import { ErrorCode } from 'smart-error-handler/shared';
+import { UIMessageMapper } from 'fault-handler/frontend';
+import { ErrorCode } from 'fault-handler/shared';
 
 // Do this once at app startup
 UIMessageMapper.registerMessages({
@@ -385,7 +385,7 @@ function LoginForm() {
 ### Backend: Validation Errors
 
 ```typescript
-import { ValidationErrorFactory } from 'smart-error-handler/backend';
+import { ValidationErrorFactory } from 'fault-handler/backend';
 
 // Zod
 app.post('/users', asyncHandler(async (req, res) => {
@@ -419,7 +419,7 @@ throw ValidationErrorFactory.invalidInput('Age must be positive');
 ### Backend: Database Errors
 
 ```typescript
-import { DatabaseErrorMapper } from 'smart-error-handler/backend';
+import { DatabaseErrorMapper } from 'fault-handler/backend';
 
 // MongoDB
 try {
@@ -446,7 +446,7 @@ try {
 ### Backend: External API Errors
 
 ```typescript
-import { ExternalAPIErrorHandler } from 'smart-error-handler/backend';
+import { ExternalAPIErrorHandler } from 'fault-handler/backend';
 
 // Payment errors
 try {
@@ -473,7 +473,7 @@ try {
 ### Backend: Process-Level Handlers
 
 ```typescript
-import { ProcessErrorHandler } from 'smart-error-handler/backend';
+import { ProcessErrorHandler } from 'fault-handler/backend';
 
 // Initialize ONCE in your app
 ProcessErrorHandler.initialize({
@@ -1034,7 +1034,7 @@ function RegisterForm() {
 
 ```typescript
 // Backend error testing
-import { UniversalError, ErrorCode } from 'smart-error-handler/shared';
+import { UniversalError, ErrorCode } from 'fault-handler/shared';
 
 it('should throw duplicate key error', () => {
   expect(() => {
@@ -1046,7 +1046,7 @@ it('should throw duplicate key error', () => {
 });
 
 // Frontend error parsing testing
-import { APIErrorParser } from 'smart-error-handler/frontend';
+import { APIErrorParser } from 'fault-handler/frontend';
 
 it('should parse API error correctly', () => {
   const response = {

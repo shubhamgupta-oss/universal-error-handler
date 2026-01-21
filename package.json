@@ -1,11 +1,11 @@
 {
-  "name": "smart-error-handler",
+  "name": "fault-handler",
   "version": "1.0.0",
   "description": "Production-grade, universal error-handling system for Node.js/Express + React. Single shared error contract for full-stack TypeScript applications.",
   "keywords": [
     "error",
     "universal-error-handler",
-    "smart-error-handler",
+    "fault-handler",
     "universal-error",
     "error-handling",
     "exception-handling",
@@ -21,13 +21,13 @@
     "production-ready",
     "error-normalization"
   ],
-  "homepage": "https://github.com/shubhamgupta-oss/smart-error-handler",
+  "homepage": "https://github.com/shubhamgupta-oss/fault-handler",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shubhamgupta-oss/smart-error-handler.git"
+    "url": "git+https://github.com/shubhamgupta-oss/fault-handler.git"
   },
   "bugs": {
-    "url": "https://github.com/shubhamgupta-oss/smart-error-handler/issues"
+    "url": "https://github.com/shubhamgupta-oss/fault-handler/issues"
   },
   "author": "Shubham Gupta",
   "license": "MIT",
