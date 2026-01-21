@@ -3,8 +3,8 @@
  * Shows how to customize UI messages for your app
  */
 
-import { UIMessageMapper } from 'universal-error-handler/frontend';
-import { ErrorCode } from 'universal-error-handler/shared';
+import { UIMessageMapper } from 'smart-error-handler/frontend';
+import { ErrorCode } from 'smart-error-handler/shared';
 
 /**
  * Configure custom error messages for your application

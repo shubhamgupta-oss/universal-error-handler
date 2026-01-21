@@ -1,9 +1,9 @@
-import { UniversalError, ErrorCode } from 'universal-error-handler/shared';
+import { UniversalError, ErrorCode } from 'smart-error-handler/shared';
 import {
   ValidationErrorFactory,
   DatabaseErrorMapper,
   ExternalAPIErrorHandler,
-} from 'universal-error-handler/backend';
+} from 'smart-error-handler/backend';
 
 //VALIDATION ERRORS
 export function validateEmail(email: string): void {

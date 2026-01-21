@@ -13,12 +13,11 @@ import {
   ValidationErrorFactory,
   DatabaseErrorMapper,
   ExternalAPIErrorHandler,
-} from 'universal-error-handler/backend';
+} from 'smart-error-handler/backend';
 import {
   UniversalError,
   ErrorCode,
-} from 'universal-error-handler/shared';
-
+} from 'smart-error-handler/shared';
 const app = express();
 const PORT = 3000;
 
