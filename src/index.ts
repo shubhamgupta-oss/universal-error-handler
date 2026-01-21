@@ -1,6 +1,6 @@
 /**
  * MAIN ENTRY POINT - Barrel export for convenience
- * Imports: import {} from 'fault-handler'
+ * Imports: import {} from 'universal-error-handler'
  */
 
 // Shared (Both Backend & Frontend)

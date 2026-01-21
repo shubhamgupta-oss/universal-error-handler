@@ -12,8 +12,8 @@ import {
   useAsyncData,
   APIErrorParser,
   UIMessageMapper,
-} from 'fault-handler/frontend';
-import { ErrorCode, UIError } from 'fault-handler/shared';
+} from 'universal-error-handler/frontend';
+import { ErrorCode, UIError } from 'universal-error-handler/shared';
 
 //USER CREATION FORM
 
