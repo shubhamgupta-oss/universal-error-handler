@@ -17,7 +17,7 @@ A single, standardized npm package that provides comprehensive error handling ac
 - ✅ **Type-Safe** - 100% TypeScript with strict mode for all utilities
 - ✅ **Production-Ready** - Process-level handlers, graceful shutdown, request correlation
 - ✅ **Human-Friendly Messages** - Automatic translation of technical errors into user-friendly copy
-- ✅ **Comprehensive Coverage** - 40+ error codes for different scenarios (validation, DB, auth, payments, etc.)
+- ✅ **Comprehensive Coverage** - 37 error codes for different scenarios (validation, DB, auth, payments, etc.)
 - ✅ **Zero Configuration** - Works out-of-the-box with sensible defaults
 - ✅ **Customizable** - Override messages, add custom error codes, extend behavior
 
@@ -153,7 +153,7 @@ universal-error-handler/
 │       ├── ui-message-mapper.ts      # Error code → human-friendly message
 │       ├── api-error-parser.ts       # Parse API responses
 │       ├── use-api-error.ts          # React hook for API errors
-│       ├── use-global-error.ts       # Global error context
+│       ├── use-global-error.tsx      # Global error context
 │       ├── error-boundary.tsx        # Error boundary component
 │       ├── use-network-status.ts     # Online/offline detection
 │       └── use-async-data.ts         # Data fetching with error handling
@@ -173,7 +173,7 @@ universal-error-handler/
 
 | Component | Purpose | How to Use |
 |-----------|---------|-----------|
-| **ErrorCode** (enum) | 40+ predefined error codes for different scenarios | `throw new UniversalError(ErrorCode.DUPLICATE_KEY, message)` |
+| **ErrorCode** (enum) | 37 predefined error codes for different scenarios | `throw new UniversalError(ErrorCode.DUPLICATE_KEY, message)` |
 | **UniversalError** (class) | Standardized error class with code, message, status, trace ID | Use instead of native `Error` class |
 | **ErrorNormalizer** | Converts ANY error type (native JS, Zod, Joi, DB errors) to UniversalError | Auto-used in backend middleware; can be used manually |
 | **error-codes.ts** | Maps error codes to HTTP status codes (400, 401, 403, 404, 500, etc.) | Reference for understanding which status each error returns |
@@ -229,9 +229,9 @@ app.use(requestIdMiddleware); // ← Must be first to track all requests
 ```typescript
 ProcessErrorHandler.initialize({
   isDevelopment: process.env.NODE_ENV !== 'production',
-  logger: (error, req) => {
+  logger: (error) => {
     // Optional: Send to monitoring service like Sentry, DataDog
-    console.error(`[${error.code}] ${req.method} ${req.path}`);
+    console.error(`[${error.code}] ${error.message}`);
   },
   gracefulShutdown: async () => {
     // Optional: Close DB connections, cleanup
@@ -602,7 +602,7 @@ function SafeComponent() {
 
 ## � Error Codes Reference
 
-The package includes 40+ error codes covering all common scenarios:
+The package includes 37 error codes covering common scenarios:
 
 ### Generic Errors
 | Code | HTTP Status | Use When |
@@ -657,7 +657,7 @@ The package includes 40+ error codes covering all common scenarios:
 | `NETWORK_ERROR` | 503 | Network is down or unreachable |
 | `TIMEOUT_ERROR` | 504 | Request timeout |
 | `DNS_ERROR` | 503 | DNS resolution failed |
-| `OFFLINE` | N/A | Frontend is offline |
+| `OFFLINE` | 503 | Frontend is offline |
 
 ### File Operation Errors
 | Code | HTTP Status | Use When |
@@ -669,10 +669,10 @@ The package includes 40+ error codes covering all common scenarios:
 ### Frontend-Specific Errors
 | Code | HTTP Status | Use When |
 |------|-------------|----------|
-| `CHUNK_LOAD_ERROR` | N/A | Failed to load JavaScript chunk |
-| `BUILD_ERROR` | N/A | Frontend build failed |
-| `RUNTIME_ERROR` | N/A | Runtime JavaScript error |
-| `UI_CRASH` | N/A | React component crashed |
+| `CHUNK_LOAD_ERROR` | 500 | Failed to load JavaScript chunk |
+| `BUILD_ERROR` | 500 | Frontend build failed |
+| `RUNTIME_ERROR` | 500 | Runtime JavaScript error |
+| `UI_CRASH` | 500 | React component crashed |
 
 ### Business Logic Errors
 | Code | HTTP Status | Use When |
@@ -731,18 +731,11 @@ import * as Sentry from "@sentry/node";
 
 // Backend
 ProcessErrorHandler.initialize({
-  logger: (error, req) => {
+  logger: (error) => {
     // Send to Sentry with context
     Sentry.captureException(error, {
       tags: {
         errorCode: error.code,
-      },
-      contexts: {
-        request: {
-          method: req.method,
-          path: req.path,
-          traceId: (req as any).id,
-        },
       },
     });
   },
@@ -1077,17 +1070,17 @@ it('should parse API error correctly', () => {
 > A: `missingField()` is for required fields that are missing. `invalidInput()` is for fields that are present but invalid. Both send a 400 status.
 
 **Q: How do I log errors without exposing stack traces to clients?**
-> A: Use the `logger` option in `errorMiddleware()`:
+> A: Use the `logger` option in `ProcessErrorHandler.initialize()` for process-level errors (and `errorMiddleware()` logger for request errors):
 > ```typescript
-> errorMiddleware({
->   logger: (error, req) => {
+> ProcessErrorHandler.initialize({
+>   logger: (error) => {
 >     if (process.env.NODE_ENV === 'production') {
->       console.error(`[${error.code}] ${req.method} ${req.path}`); // Safe
+>       console.error(`[${error.code}] ${error.message}`); // Safe
 >     } else {
 >       console.error(error); // Include stack trace in dev
 >     }
 >   }
-> })
+> });
 > ```
 
 **Q: What does `ProcessErrorHandler` actually do?**

@@ -8,6 +8,10 @@ import { ErrorCode } from './error-codes';
 import { ErrorContext } from './types';
 
 export class ErrorNormalizer {
+  private static isValidErrorCode(value: unknown): value is ErrorCode {
+    return typeof value === 'string' && Object.values(ErrorCode).includes(value as ErrorCode);
+  }
+
   /**
    * Normalize any error to UniversalError
    * Detects error type and maps to appropriate code
@@ -194,7 +198,9 @@ export class ErrorNormalizer {
 
     // HTTP-like error object
     if (error.status || error.statusCode) {
-      const code = error.code || ErrorCode.INTERNAL_SERVER_ERROR;
+      const code = this.isValidErrorCode(error.code)
+        ? error.code
+        : ErrorCode.INTERNAL_SERVER_ERROR;
       return new UniversalError(
         code,
         error.message || 'An error occurred',

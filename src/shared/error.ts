@@ -6,6 +6,18 @@
 import { ErrorCode, HTTP_STATUS_CODES } from './error-codes';
 import { ErrorContext } from './types';
 
+const SENSITIVE_DETAIL_KEYS = [
+  'password',
+  'token',
+  'secret',
+  'authorization',
+  'cookie',
+  'set-cookie',
+  'apiKey',
+  'accessToken',
+  'refreshToken',
+];
+
 export class UniversalError extends Error {
   public readonly code: ErrorCode;
   public readonly status: number;
@@ -50,7 +62,7 @@ export class UniversalError extends Error {
       success: false as const,
       message: this.message,
       code: this.code,
-      details: this.details,
+      details: UniversalError.sanitizeDetails(this.details),
       traceId: this.traceId,
       timestamp: this.timestamp,
     };
@@ -64,10 +76,39 @@ export class UniversalError extends Error {
       code: this.code,
       message: this.message,
       status: this.status,
-      details: this.details,
+      details: UniversalError.sanitizeDetails(this.details),
       traceId: this.traceId,
       timestamp: this.timestamp,
     };
+  }
+
+  private static sanitizeDetails(details?: Record<string, any>): Record<string, any> | undefined {
+    if (!details || typeof details !== 'object') {
+      return details;
+    }
+
+    return this.sanitizeValue(details) as Record<string, any>;
+  }
+
+  private static sanitizeValue(value: unknown): unknown {
+    if (Array.isArray(value)) {
+      return value.map((item) => this.sanitizeValue(item));
+    }
+
+    if (!value || typeof value !== 'object') {
+      return value;
+    }
+
+    const sanitized: Record<string, unknown> = {};
+    for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
+      const isSensitive = SENSITIVE_DETAIL_KEYS.some(
+        (sensitiveKey) => key.toLowerCase() === sensitiveKey.toLowerCase()
+      );
+
+      sanitized[key] = isSensitive ? '[REDACTED]' : this.sanitizeValue(nestedValue);
+    }
+
+    return sanitized;
   }
 }
 

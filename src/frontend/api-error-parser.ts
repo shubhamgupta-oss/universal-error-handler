@@ -7,6 +7,10 @@ import { ErrorCode } from '../shared';
 import { UIMessageMapper } from './ui-message-mapper';
 
 export class APIErrorParser {
+  private static isNavigatorOffline(): boolean {
+    return typeof navigator !== 'undefined' && navigator.onLine === false;
+  }
+
   /**
    * Check if response is an error
    */
@@ -57,7 +61,7 @@ export class APIErrorParser {
     }
 
     // Network error
-    if (!navigator.onLine || error?.message?.includes('network')) {
+    if (this.isNavigatorOffline() || error?.message?.includes('network')) {
       return {
         code: ErrorCode.OFFLINE,
         technicalMessage: 'Network error',

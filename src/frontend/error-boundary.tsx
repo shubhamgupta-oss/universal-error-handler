@@ -24,6 +24,18 @@ interface ErrorBoundaryState {
   error: UIError | null;
 }
 
+function toBoundaryUIError(error: Error, componentStack?: string): UIError {
+  return {
+    code: ErrorCode.UI_CRASH,
+    technicalMessage: error.message,
+    uiMessage: UIMessageMapper.getMessage(ErrorCode.UI_CRASH),
+    details: {
+      componentStack,
+      stack: error.stack,
+    },
+  };
+}
+
 /**
  * Error Boundary wrapper - for catching React errors
  * Class component (required for React error boundaries)
@@ -40,20 +52,13 @@ export class ErrorBoundary extends Component<
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
-      error: {
-        code: ErrorCode.UI_CRASH,
-        technicalMessage: error.message,
-        uiMessage: UIMessageMapper.getMessage(ErrorCode.UI_CRASH),
-        details: {
-          componentStack: error.stack,
-        },
-      },
+      error: toBoundaryUIError(error),
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    if (this.props.onError && this.state.error) {
-      this.props.onError(this.state.error);
+    if (this.props.onError) {
+      this.props.onError(toBoundaryUIError(error, errorInfo.componentStack ?? undefined));
     }
     console.error('Error Boundary caught:', error, errorInfo);
   }
@@ -82,6 +87,10 @@ export function useErrorHandler(onError?: (error: UIError) => void) {
   }, [onError]);
 
   React.useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const handleError = (event: ErrorEvent) => {
       const uiError: UIError = {
         code: ErrorCode.RUNTIME_ERROR,
@@ -107,6 +116,10 @@ export function useErrorHandler(onError?: (error: UIError) => void) {
   }, []);
 
   React.useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     window.addEventListener('unhandledrejection', handleRejection);
     return () => window.removeEventListener('unhandledrejection', handleRejection);
   }, [handleRejection]);
